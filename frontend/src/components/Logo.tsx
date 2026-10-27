@@ -3,7 +3,7 @@ import { useId } from "react";
 import { APP_NAME } from "@/lib/brand";
 import { cn } from "@/lib/cn";
 
-/** The Ember mark: a flame with a check cut out of it, on a warm gradient tile. */
+/** Flame with a check cut out, on a gradient tile. */
 export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
   // Unique gradient ids so several logos on one page don't clash.
   const id = useId().replace(/:/g, "");

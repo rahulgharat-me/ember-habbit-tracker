@@ -14,13 +14,13 @@ MODE="dev"
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 fail() { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
-# --- Install dependencies on first run -------------------------------------------------------
+# install dependencies on first run
 if [[ ! -f .env || ! -x .venv/bin/uvicorn || ! -x node_modules/.bin/next ]]; then
   info "Dependencies missing; running setup.sh first"
   ./setup.sh
 fi
 
-# --- Configuration (root .env) ---------------------------------------------------------------
+# configuration (root .env)
 set -a
 # shellcheck disable=SC1091
 source .env
@@ -45,7 +45,7 @@ for port in "$BACKEND_PORT" "$FRONTEND_PORT"; do
   fi
 done
 
-# --- Process management ----------------------------------------------------------------------
+# process management
 cleanup() {
   trap - INT TERM EXIT
   echo
@@ -54,13 +54,13 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-# --- Backend ---------------------------------------------------------------------------------
+# backend
 backend_args=(app.main:app --host 127.0.0.1 --port "$BACKEND_PORT")
 [[ "$MODE" == "dev" ]] && backend_args+=(--reload)
 info "Starting backend on http://localhost:$BACKEND_PORT"
 (cd backend && exec ../.venv/bin/uvicorn "${backend_args[@]}") &
 
-# --- Frontend --------------------------------------------------------------------------------
+# frontend
 if [[ "$MODE" == "prod" ]]; then
   info "Building frontend"
   npm run build --workspace frontend
@@ -71,7 +71,7 @@ else
   npm run dev --workspace frontend -- --port "$FRONTEND_PORT" &
 fi
 
-# --- Wait until both answer ------------------------------------------------------------------
+# wait until both answer
 wait_for() {
   local url="$1" name="$2"
   for _ in $(seq 1 120); do

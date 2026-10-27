@@ -19,7 +19,7 @@ REQUIREMENTS="backend/requirements-dev.txt"
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 fail() { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
-# --- Prerequisites ---------------------------------------------------------------------------
+# prerequisites
 command -v "$PYTHON" >/dev/null || fail "$PYTHON not found. Install Python $MIN_PYTHON+."
 "$PYTHON" -c "import sys; sys.exit(sys.version_info < tuple(map(int, '$MIN_PYTHON'.split('.'))))" \
   || fail "Python $MIN_PYTHON+ required (found $("$PYTHON" --version 2>&1))."
@@ -29,13 +29,13 @@ command -v npm >/dev/null || fail "npm not found."
 node_major="$(node -p 'process.versions.node.split(".")[0]')"
 (( node_major >= MIN_NODE_MAJOR )) || fail "Node.js $MIN_NODE_MAJOR+ required (found $(node --version))."
 
-# --- Environment file ------------------------------------------------------------------------
+# environment file
 if [[ ! -f .env ]]; then
   info "Creating .env from .env.example"
   cp .env.example .env
 fi
 
-# --- Python ----------------------------------------------------------------------------------
+# python
 if [[ ! -x .venv/bin/python ]]; then
   info "Creating Python virtualenv in .venv ($("$PYTHON" --version))"
   "$PYTHON" -m venv .venv
@@ -44,7 +44,7 @@ info "Installing Python dependencies from $REQUIREMENTS"
 .venv/bin/python -m pip install --quiet --upgrade pip
 .venv/bin/python -m pip install --quiet -r "$REQUIREMENTS"
 
-# --- Node ------------------------------------------------------------------------------------
+# node
 info "Installing Node dependencies into node_modules"
 if [[ -f package-lock.json ]]; then
   npm ci --no-audit --no-fund

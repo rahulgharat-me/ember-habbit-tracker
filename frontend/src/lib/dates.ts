@@ -40,7 +40,7 @@ export function endOfMonth(iso: ISODate): ISODate {
   return toISODate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
 }
 
-/** Monday-based weekday: 0 = Monday … 6 = Sunday. */
+/** Monday-based weekday: 0 = Monday, 6 = Sunday. */
 export function weekdayIndex(iso: ISODate): number {
   return (parseISODate(iso).getDay() + 6) % 7;
 }

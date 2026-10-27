@@ -32,7 +32,7 @@ export interface Habit {
   start_date: ISODate;
   archived_on: ISODate | null;
   is_archived: boolean;
-  /** Weekdays the habit is not required on (0 = Monday … 6 = Sunday). */
+  /** Weekdays the habit is not required on (0 = Monday, 6 = Sunday). */
   skip_weekdays: number[];
   /** Specific days the habit is not required on. */
   skip_dates: ISODate[];

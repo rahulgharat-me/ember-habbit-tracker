@@ -160,7 +160,7 @@ export function Tour({ steps, onClose }: { steps: TourStep[]; onClose: () => voi
     setIndex((i) => Math.max(i - 1, 0));
   }
 
-  // Toasts (e.g. "Added …" from onboarding) sit above everything and would cover the tour.
+  // Toasts (e.g. "Added ..." from onboarding) sit above everything and would cover the tour.
   useEffect(() => {
     toast.dismiss();
   }, []);

@@ -33,7 +33,7 @@ class CalendarDay(BaseModel):
 
 
 class WeekdayStat(BaseModel):
-    weekday: int  # 0 = Monday … 6 = Sunday
+    weekday: int  # 0 = Monday, 6 = Sunday
     possible: int
     completed: int
     rate: float

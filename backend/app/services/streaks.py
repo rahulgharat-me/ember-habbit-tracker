@@ -72,9 +72,6 @@ def date_range(start: date, end: date) -> Iterable[date]:
         day += ONE_DAY
 
 
-# --- Per-habit -------------------------------------------------------------------------------
-
-
 def habit_current_streak(history: HabitHistory, today: date) -> int:
     day = today if history.last_day is None else min(today, history.last_day)
     if history.is_active(day) and not history.is_completed(day):
@@ -110,9 +107,6 @@ def habit_tally(history: HabitHistory, start: date, today: date) -> Tally:
             possible += 1
             completed += history.is_completed(day)
     return Tally(possible, completed)
-
-
-# --- Across all habits -----------------------------------------------------------------------
 
 
 def day_counts(histories: Sequence[HabitHistory], day: date) -> tuple[int, int, int]:

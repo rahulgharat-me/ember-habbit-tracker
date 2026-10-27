@@ -5,8 +5,6 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
-// --- Buttons ---------------------------------------------------------------------------------
-
 type ButtonVariant = "primary" | "brand" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
@@ -53,8 +51,6 @@ export function ButtonLink({
 }: ComponentProps<typeof Link> & { variant?: ButtonVariant; size?: ButtonSize }) {
   return <Link className={cn(buttonClass(variant, size), className)} {...props} />;
 }
-
-// --- Layout ----------------------------------------------------------------------------------
 
 export function PageHeader({
   title,
@@ -105,8 +101,6 @@ export function CardTitle({
     </div>
   );
 }
-
-// --- Data display ----------------------------------------------------------------------------
 
 const STAT_TONES = {
   brand: "bg-brand/10 text-brand",
@@ -199,8 +193,6 @@ export function Skeleton({ className = "" }: { className?: string }) {
   return <div className={cn("animate-pulse rounded-2xl bg-subtle", className)} />;
 }
 
-// --- Feedback --------------------------------------------------------------------------------
-
 export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
     <div
@@ -221,7 +213,6 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: (
   );
 }
 
-/** Soft, branded spot illustration: a gradient tile with an icon, framed by rings and sparkles. */
 export function Illustration({ icon: Icon, className }: { icon: LucideIcon; className?: string }) {
   return (
     <div className={cn("relative mx-auto grid size-32 place-items-center", className)} aria-hidden>

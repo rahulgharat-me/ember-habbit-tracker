@@ -32,7 +32,7 @@ class Habit(Base):
     start_date: Mapped[date] = mapped_column(Date)
     # First day the habit no longer counts (exclusive). ``None`` means active.
     archived_on: Mapped[date | None] = mapped_column(Date, default=None)
-    # Weekdays the habit is not required on (0 = Monday … 6 = Sunday).
+    # Weekdays the habit is not required on (0 = Monday, 6 = Sunday).
     skip_weekdays: Mapped[list[int]] = mapped_column(JSON, default=list, server_default="[]")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
@@ -82,7 +82,7 @@ class HabitLog(Base):
 
 
 class HabitSkipDate(Base):
-    """A specific day on which a habit is not required (holiday, sick day, …)."""
+    """A specific day on which a habit is not required (holiday, sick day, etc.)."""
 
     __tablename__ = "habit_skip_dates"
     __table_args__ = (UniqueConstraint("habit_id", "date", name="uq_habit_skip_day"),)

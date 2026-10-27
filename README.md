@@ -156,7 +156,7 @@ and the streak carries over it. Days off are left out of completion rates.
     └── src/
         ├── app/            # routes (/, /calendar, /insights, /habits, /login, /about), 404, error page,
         │                   # favicon (icon.svg), apple-icon, opengraph-image, manifest
-        ├── components/     # UI kit (ui.tsx), Nav, Logo, Onboarding, Tour, DayChecklist, charts…
+        ├── components/     # UI kit (ui.tsx), Nav, Logo, Onboarding, Tour, DayChecklist, charts
         ├── hooks/          # useAsync, useToday, useCurrentUser, useTour
         └── lib/            # typed API client, types, dates, brand name (brand.ts), cn()
 ```
@@ -236,7 +236,3 @@ All settings live in the root `.env` (see `.env.example`). Backend variables use
 button to the public About page (`/about`, linked from the login page). `start.sh` reads `BACKEND_PORT` and `FRONTEND_PORT`.
 When deploying, set `HABIT_PUBLIC_URL` to the public `https://` address and update the OAuth app's
 URLs to match.
-
-### Next steps for a growing project
-
-- Add frontend tests with Vitest and Playwright.

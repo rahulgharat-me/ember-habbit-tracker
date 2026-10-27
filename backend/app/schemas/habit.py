@@ -25,7 +25,7 @@ def _normalize_dates(days: list[date]) -> list[date]:
 SkipWeekdays = Annotated[
     list[Annotated[int, Field(ge=0, le=6)]],
     AfterValidator(_normalize_weekdays),
-    Field(description="Weekdays the habit is not required on (0 = Monday … 6 = Sunday)"),
+    Field(description="Weekdays the habit is not required on (0 = Monday, 6 = Sunday)"),
 ]
 SkipDates = Annotated[
     list[date],
