@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Dark mode follows the `dark` class that next-themes puts on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-subtle: #f5f5f4;
+  --color-fg: #1c1917;
+  --color-muted: #78716c;
+  --color-line: #e7e5e4;
+  --color-brand: #f97316;
+  --color-brand-2: #e11d48;
+  --color-ok: #10b981;
+  --color-warn: #f59e0b;
+  --color-bad: #ef4444;
+
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.04), 0 4px 16px -8px rgb(28 25 23 / 0.08);
+  --shadow-lift: 0 1px 2px rgb(28 25 23 / 0.06), 0 12px 32px -12px rgb(28 25 23 / 0.18);
+  --shadow-glow: 0 8px 28px -8px rgb(249 115 22 / 0.55);
+
+  --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-fade-up: fade-up 0.4s ease-out both;
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.85);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.dark {
+  --color-bg: #0c0a09;
+  --color-surface: #161413;
+  --color-subtle: #1f1c1b;
+  --color-fg: #fafaf9;
+  --color-muted: #a8a29e;
+  --color-line: #2c2826;
+  --color-brand: #fb923c;
+  --color-brand-2: #f43f5e;
+  --color-ok: #34d399;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px -8px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+@utility bg-brand-gradient {
+  background-image: linear-gradient(135deg, var(--color-brand), var(--color-brand-2));
+}
+
+@utility text-brand-gradient {
+  background-image: linear-gradient(135deg, var(--color-brand), var(--color-brand-2));
+  background-clip: text;
+  color: transparent;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Soft brand glow behind the top of every page. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: 22rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(60% 100% at 50% 0%, rgb(249 115 22 / 0.09), transparent 70%);
+}
+
+::selection {
+  background: rgb(249 115 22 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
