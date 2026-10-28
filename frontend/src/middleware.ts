@@ -12,9 +12,9 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except the public pages (login, about), the proxied API, Next internals and public files
+  // Everything except the public pages (login, about, demo), the proxied API, Next internals and public files
   // (icons, manifest, images) that the login page itself needs.
   matcher: [
-    "/((?!login|about|api|_next/static|_next/image|manifest\\.webmanifest|.*\\.(?:svg|png|ico|jpg|webp)$).*)",
+    "/((?!login|about|demo|api|_next/static|_next/image|manifest\\.webmanifest|.*\\.(?:svg|png|ico|jpg|webp)$).*)",
   ],
 };

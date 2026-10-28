@@ -5,6 +5,7 @@ import {
   CircleCheck,
   Clock,
   Coffee,
+  Eye,
   Flame,
   Info,
   KeyRound,
@@ -213,6 +214,14 @@ export default async function LoginPage({
             <GitHubMark />
             {waiting ? "Try signing in again" : "Continue with GitHub"}
           </a>
+
+          <Link
+            href="/demo"
+            className="mt-3 flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-line bg-surface font-medium text-fg shadow-card transition hover:bg-subtle active:scale-[0.98]"
+          >
+            <Eye className="size-4" aria-hidden />
+            View the demo
+          </Link>
 
           {showRequest && (
             <>

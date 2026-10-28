@@ -17,7 +17,7 @@ import type {
 const API_PREFIX = "/api";
 export const LOGIN_PATH = "/login";
 /** Pages reachable without signing in; they render without the app navigation. */
-export const PUBLIC_PATHS = [LOGIN_PATH, "/about"];
+export const PUBLIC_PATHS = [LOGIN_PATH, "/about", "/demo"];
 
 export class ApiError extends Error {
   constructor(

@@ -25,7 +25,7 @@ interface Props {
   onChanged?: () => void;
 }
 
-function celebrate() {
+export function celebrate() {
   const colors = ["#fdba74", "#f97316", "#e11d48", "#10b981"];
   void confetti({
     particleCount: 90,

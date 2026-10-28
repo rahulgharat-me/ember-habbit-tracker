@@ -42,7 +42,8 @@ Then start the app:
 - App: http://localhost:3000
 - API docs: http://localhost:8000/docs
 
-`./start.sh --prod` builds the frontend and runs both servers without auto-reload.
+In dev mode both apps reload when you change their code, and editing `.env` restarts both with the
+new values. `./start.sh --prod` builds the frontend and runs both servers without auto-reload.
 Press `Ctrl+C` to stop everything.
 
 **Requirements:** Python 3.11+, Node.js 20+.
@@ -59,6 +60,12 @@ Press `Ctrl+C` to stop everything.
   `HttpOnly`, `SameSite=Lax`, and `Secure` when `HABIT_PUBLIC_URL` is `https://`.
 - The browser only talks to the Next.js app, which proxies `/api/*` to FastAPI. The backend
   listens on `127.0.0.1` only.
+
+## Demo page
+
+`/demo` is a public, read-only tour of the app with sample habits, meant for linking from a
+portfolio: no sign-in, and no backend calls. The data is generated in the browser
+(`frontend/src/lib/demo.ts`); visitors can tick today's habits, but nothing is saved.
 
 ## Invite-only mode and access requests
 
