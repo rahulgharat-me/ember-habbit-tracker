@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Starts the backend (FastAPI) and frontend (Next.js) together. Ctrl+C stops both.
 #
-# Usage: ./start.sh          development mode (auto-reload)
+# Usage: ./start.sh          development mode: code changes reload each app, and editing .env
+#                            restarts both
 #        ./start.sh --prod   production build of the frontend, no reload
 set -euo pipefail
 
@@ -21,14 +22,22 @@ if [[ ! -f .env || ! -x .venv/bin/uvicorn || ! -x node_modules/.bin/next ]]; the
 fi
 
 # configuration (root .env)
-set -a
-# shellcheck disable=SC1091
-source .env
-set +a
-BACKEND_PORT="${BACKEND_PORT:-8000}"
-FRONTEND_PORT="${FRONTEND_PORT:-3000}"
-export BACKEND_PORT FRONTEND_PORT
-export HABIT_PUBLIC_URL="${HABIT_PUBLIC_URL:-http://localhost:$FRONTEND_PORT}"
+ENV_VARS=()
+load_env() {
+  # Forget values from the previous load, so a line removed from .env is really gone.
+  if ((${#ENV_VARS[@]})); then unset "${ENV_VARS[@]}"; fi
+  # shellcheck disable=SC2207
+  ENV_VARS=($(sed -nE 's/^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=.*/\2/p' .env))
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+  BACKEND_PORT="${BACKEND_PORT:-8000}"
+  FRONTEND_PORT="${FRONTEND_PORT:-3000}"
+  export BACKEND_PORT FRONTEND_PORT
+  export HABIT_PUBLIC_URL="${HABIT_PUBLIC_URL:-http://localhost:$FRONTEND_PORT}"
+}
+load_env
 
 if [[ -z "${HABIT_GITHUB_CLIENT_ID:-}" || -z "${HABIT_GITHUB_CLIENT_SECRET:-}" ]]; then
   printf '\033[1;33mwarning:\033[0m GitHub sign-in is not configured, so nobody can log in yet.\n'
@@ -54,22 +63,41 @@ cleanup() {
 }
 trap cleanup INT TERM EXIT
 
-# backend
-backend_args=(app.main:app --host 127.0.0.1 --port "$BACKEND_PORT")
-[[ "$MODE" == "dev" ]] && backend_args+=(--reload)
-info "Starting backend on http://localhost:$BACKEND_PORT"
-(cd backend && exec ../.venv/bin/uvicorn "${backend_args[@]}") &
+start_servers() {
+  # backend
+  local backend_args=(app.main:app --host 127.0.0.1 --port "$BACKEND_PORT")
+  [[ "$MODE" == "dev" ]] && backend_args+=(--reload)
+  info "Starting backend on http://localhost:$BACKEND_PORT"
+  (cd backend && exec ../.venv/bin/uvicorn "${backend_args[@]}") &
+  BACKEND_PID=$!
 
-# frontend
-if [[ "$MODE" == "prod" ]]; then
-  info "Building frontend"
-  npm run build --workspace frontend
-  info "Starting frontend on http://localhost:$FRONTEND_PORT"
-  npm run start --workspace frontend -- --port "$FRONTEND_PORT" &
-else
-  info "Starting frontend on http://localhost:$FRONTEND_PORT"
-  npm run dev --workspace frontend -- --port "$FRONTEND_PORT" &
-fi
+  # frontend
+  if [[ "$MODE" == "prod" ]]; then
+    info "Building frontend"
+    npm run build --workspace frontend
+    info "Starting frontend on http://localhost:$FRONTEND_PORT"
+    npm run start --workspace frontend -- --port "$FRONTEND_PORT" &
+  else
+    info "Starting frontend on http://localhost:$FRONTEND_PORT"
+    npm run dev --workspace frontend -- --port "$FRONTEND_PORT" &
+  fi
+  FRONTEND_PID=$!
+}
+
+# Stops a process and everything it started (npm → next, uvicorn → its reload worker).
+kill_tree() {
+  local child
+  for child in $(pgrep -P "$1" 2>/dev/null); do kill_tree "$child"; done
+  kill "$1" 2>/dev/null || true
+}
+
+stop_servers() {
+  kill_tree "$BACKEND_PID"
+  kill_tree "$FRONTEND_PID"
+  wait "$BACKEND_PID" "$FRONTEND_PID" 2>/dev/null || true
+}
+
+start_servers
 
 # wait until both answer
 wait_for() {
@@ -92,4 +120,24 @@ cat <<EOF
   Press Ctrl+C to stop.
 
 EOF
-wait
+
+if [[ "$MODE" == "prod" ]]; then
+  wait
+  exit
+fi
+
+# dev: each app reloads its own code; a change to .env restarts both with the new values.
+env_mtime() { stat -f %m .env 2>/dev/null || stat -c %Y .env; }
+last_mtime="$(env_mtime)"
+while sleep 1; do
+  mtime="$(env_mtime)"
+  [[ "$mtime" == "$last_mtime" ]] && continue
+  last_mtime="$mtime"
+  info ".env changed; restarting backend and frontend"
+  stop_servers
+  load_env
+  start_servers
+  wait_for "http://localhost:$BACKEND_PORT/api/health" "Backend"
+  wait_for "http://localhost:$FRONTEND_PORT" "Frontend"
+  info "Restarted: $HABIT_PUBLIC_URL"
+done
